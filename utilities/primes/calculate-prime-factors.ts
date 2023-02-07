@@ -1,4 +1,4 @@
-import testFactory from '../../test';
+import testFactory from '../test';
 import { assertArrayMembersAreEqual } from '../array-assertions';
 
 import calculatePrimeNumbers from './calculate-prime-numbers';
@@ -19,7 +19,7 @@ function calculatePrimeFactors(
         return [primes[i]];
       }
     }
-     // no prime factors (which would make it prime)
+    // no prime factors (which would make it prime)
     return [];
   }
 

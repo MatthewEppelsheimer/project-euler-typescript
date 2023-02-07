@@ -1,4 +1,4 @@
-import testFactory from '../../test';
+import testFactory from '../test';
 import { assertArrayMembersAreEqual } from '../array-assertions';
 
 function* primeIterator() {
@@ -37,16 +37,22 @@ function testPrimeIterator() {
     generatedPrimes.push(sut.next().value as number);
   }
 
-  test(`first 9 primes`,()=>{
-    assertArrayMembersAreEqual([1,2,3,5,7,11,13,17,19],generatedPrimes);},generatedPrimes
+  test(
+    `first 9 primes`,
+    () => {
+      assertArrayMembersAreEqual(
+        [1, 2, 3, 5, 7, 11, 13, 17, 19],
+        generatedPrimes
+      );
+    },
+    generatedPrimes
   );
 }
 let tested = false;
 
-export default (()=>{
+export default (() => {
   !tested && testPrimeIterator();
   tested = true;
-  
+
   return primeIterator;
 })();
-

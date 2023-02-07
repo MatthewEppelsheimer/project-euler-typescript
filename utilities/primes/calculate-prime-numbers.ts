@@ -1,4 +1,4 @@
-import testFactory from '../../test';
+import testFactory from '../test';
 import { assertArrayMembersAreEqual } from '../array-assertions';
 
 let tested = false;
@@ -6,13 +6,16 @@ let tested = false;
 /**
  * Generate an array of prime numbers with values up to provided value
  */
-function calculatePrimeNumbers(upToValue: number = 100, options?: {verbose?: boolean}): number[] {
+function calculatePrimeNumbers(
+  upToValue: number = 100,
+  options?: { verbose?: boolean }
+): number[] {
   console.info(`Calculating prime numbers with values up to ${upToValue}`);
   const primes: number[] = [];
 
   for (let candidate = 1; candidate < upToValue; candidate++) {
     if (options?.verbose && upToValue > 1000000 && 0 === candidate % 1000000) {
-      console.info(`..progress: ${Math.round(candidate / upToValue * 100)}%`);
+      console.info(`..progress: ${Math.round((candidate / upToValue) * 100)}%`);
     }
 
     if (1 === candidate) {
@@ -60,6 +63,6 @@ function testCalculatePrimeNumbers() {
 export default (() => {
   !tested && testCalculatePrimeNumbers();
   tested = true;
-  
+
   return calculatePrimeNumbers;
 })();

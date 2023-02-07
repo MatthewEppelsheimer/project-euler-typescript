@@ -1,3 +1,3 @@
-import solution from './project-euler-problems/3';
+import solution from './problems/3';
 
 solution();
