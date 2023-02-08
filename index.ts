@@ -1,3 +1,3 @@
-import solution from './problems/3';
+import solution from './problems/4';
 
 solution();
