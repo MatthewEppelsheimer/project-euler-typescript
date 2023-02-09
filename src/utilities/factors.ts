@@ -59,7 +59,7 @@ function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] 
 }
 
 function testGetFactorsOf(): void {
-    const test = testFactory({ reportPassingTests: true });
+    const test = testFactory();
 
     ([
         [1, [1]],
@@ -146,11 +146,11 @@ function testGetFactorsOf(): void {
         // exploit cache access, expect use of an injected nonsense value for a factor of factors
         factorCache.clear();
         const dummyCacheHit = [-2];
-        factorCache.set(2,dummyCacheHit);
+        factorCache.set(2, dummyCacheHit);
         const actual = getFactorsOf(4);
 
         test<typeof getFactorsOf>(`uses cached factors of factors`, () => {
-            assertArrayMembersAreEqual([-2,1,2,4], actual);
+            assertArrayMembersAreEqual([-2, 1, 2, 4], actual);
         }, actual);
 
         factorCache.clear();
