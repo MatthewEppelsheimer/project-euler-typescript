@@ -1,23 +1,36 @@
 import testFactory from "../utilities/test";
 import { assertArrayMembersAreEqual } from "../utilities/array-assertions";
 
-function getFactorsOf(product: number, options?: {DEBUG?:boolean}): number[] {
-    const DEBUG = options?.DEBUG;
+const factorCache = new Map<number, number[]>();
 
+function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] {
+    const DEBUG = options?.DEBUG;
     DEBUG && console.log(`getFactorsOf(${product}) call`);
+
+    const cached = factorCache.get(product)
+    if (undefined !== cached) {
+        return cached;
+    }
+
     if (1 === product) {
-        return [1];
+        const factors = [1];
+        DEBUG && console.log({ factors });
+        factorCache.set(product, factors);
+        return factors;
     }
 
     if (2 === product) {
-        return [1,2];
+        const factors = [1, 2];
+        DEBUG && console.log({ factors });
+        factorCache.set(product, factors);
+        return factors;
     }
 
-    const factors = [1,product];
+    const factors = [1, product];
 
     let factorCandidate: number = Math.floor(product / 2);
     while (factorCandidate > 1) {
-        DEBUG && console.log({factorCandidate});
+        DEBUG && console.log({ factorCandidate });
         if (-1 === factors.indexOf(factorCandidate) && 0 === product % factorCandidate) {
             factors.push(factorCandidate);
             factors.push(product / factorCandidate);
