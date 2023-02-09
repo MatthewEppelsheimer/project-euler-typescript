@@ -1,104 +1,75 @@
 import * as console from "console";
 
+import { countdownFrom } from "../utilities/iterators";
+import { palindromeCountdown } from "../utilities/palindromes";
+
+const CIRCUIT_BREAKER_STEPS = 300;
+
 // A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
 // Find the largest palindrome made from the product of two 3-digit numbers.
 
-function isPalindrome(candidate: number): boolean {
-  const arr = Array.from(candidate.toString(10));
+// Dev journal at bottom.
+
+const LARGEST_PRODUCT_OF_TWO_FACTORS_WITH_THREE_DIGITS = 999 * 999;
+
+function solution(): void {
+  const palindrome = palindromeCountdown(999);
   let i = 0;
-  while (i < arr.length - 1 - i) {
-    // console.log(`comparing ${arr[i]} with ${arr[arr.length - 1 - i]}`);
-    if (arr[i] !== arr[arr.length - 1 - i]) {
-      return false;
-    }
-    i++;
-  }
-  return true;
-}
-
-function* countdownFrom(start: number): Generator<number, number> {
-  let count = start;
-  while (count > 0) {
-    yield count;
-    count--;
-  }
-  return count;
-}
-
-function* factorPair(): Generator<[number, number]> {
-  // algorithm:
-  //    if first = second, reset first and derement second; else decrement first
-  //    result:
-  // yield [999, 999]; first = second; reset first and decrement second
-  // yield [999, 998]; first != second; decrement first
-  // yield [998, 998]; first = second; reset first and decrement second
-  // yield [999, 997];
-  // yield [998, 997];
-  // yield [999, 996];
-  // yield [998, 996];
-  // yield [997, 996];
-  // yield [996,996];
-
-  let firstCountdown: Generator<number, number> = countdownFrom(999);
-  const resetFirstCounter = (): void => {
-    firstCountdown = countdownFrom(999);
-  };
-
-  const secondCountdown: Generator<number> = countdownFrom(999);
-
-  let first: number = firstCountdown.next().value;
-  let second: number = secondCountdown.next().value;
-
   while (true) {
-    yield [first, second];
-    if (first === second) {
-      resetFirstCounter();
-      first = firstCountdown.next().value;
-      second = secondCountdown.next().value;
-    } else {
-      first = firstCountdown.next().value;
-    }
-  }
-}
-
-const ABORT = false;
-const CIRCUIT_BREAKER_STEPS = 10;
-
-function solutionAttempt1(): void {
-  if (ABORT) {
-    console.log(`aborted`);
-    return;
-  }
-
-  let answer = null;
-  let answerFactors;
-  const candidateFactors = factorPair();
-
-  let debugLastProduct: number;
-
-  let i = 0;
-  while (answer === null && i < CIRCUIT_BREAKER_STEPS) {
-    const c = candidateFactors.next().value;
-    const product = c[0] * c[1];
-
-    console.log({ first: c[0], second: c[1], product });
-    if (undefined !== debugLastProduct! && debugLastProduct < product) {
-      debugger;
-    }
-    debugLastProduct = product;
-
-    if (isPalindrome(product)) {
-      answer = product;
-      answerFactors = c;
-    }
     i++;
-  }
+    if (i > CIRCUIT_BREAKER_STEPS) {
+      console.log(`CB tripped after testing ${i} palindromes`);
+      break;
+    }
 
-  console.log(
-    undefined === answerFactors
-      ? `Aborted by circuit breaker after ${i} steps`
-      : `The largest palindrome made from the product of two 3-digit numbers is ${answer}, with factors ${answerFactors[0]} and ${answerFactors[1]}`
-  );
+    const candidate = palindrome.next().value;
+
+    if (candidate > LARGEST_PRODUCT_OF_TWO_FACTORS_WITH_THREE_DIGITS) {
+      // console.log(`${candidate} skipped because too large`);
+      continue;
+    }
+
+    let factors = countdownFrom(999);
+    let testFactor: number
+
+    do {
+      testFactor = factors.next().value;
+      if (0 === testFactor % 25) {
+        // console.log({candidate, testFactor});
+
+        // short cut every 25
+        if (candidate/testFactor > testFactor) {
+          // now we're testing repeats
+          // console.log(`break with ${candidate/testFactor} > ${testFactor}`);
+          break;
+        }
+      }
+
+      if (0 !== candidate % testFactor) {
+        // not a factor
+        continue;
+      }
+
+      const secondFactor = candidate / testFactor;
+      if (secondFactor > testFactor) {
+        // now we're testing repeats
+        // console.log(`break with ${secondFactor} > ${testFactor}`);
+        break;
+      }
+
+      if (secondFactor > 99) {
+        // winner
+        console.log(
+          `The largest palindrome made from the product of two 3-digit numbers is ${candidate}, with factors ${testFactor} and ${secondFactor}`
+        )
+        return;
+      }
+    } while (testFactor > 99);
+  }
 }
 
-export default solutionAttempt1;
+export default solution;
+
+// First solution attempt was to generate products from factors, then check if they were palindromes. The challenge with this was determining if a found solution was the largest: I didn't crack the nut of how to generate factor pairs whose product would always be less than the previous.
+
+// So I switched to generating large-to-small palindromes, and looking for factor pairs. 
