@@ -3,8 +3,6 @@ import { assertArrayMembersAreEqual } from '../array-assertions';
 
 import calculatePrimeNumbers from './calculate-prime-numbers';
 
-let tested = false;
-
 function calculatePrimeFactors(
   subject: number,
   options?: { verbose?: boolean; largestOnly?: boolean }
@@ -55,9 +53,6 @@ function testCalculatePrimeFactors() {
   );
 }
 
-export default (() => {
-  !tested && testCalculatePrimeFactors();
-  tested = true;
+testCalculatePrimeFactors();
 
-  return calculatePrimeFactors;
-})();
+export default calculatePrimeFactors;

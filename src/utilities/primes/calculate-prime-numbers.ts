@@ -1,8 +1,6 @@
 import testFactory from '../test';
 import { assertArrayMembersAreEqual } from '../array-assertions';
 
-let tested = false;
-
 /**
  * Generate an array of prime numbers with values up to provided value
  */
@@ -60,9 +58,6 @@ function testCalculatePrimeNumbers() {
   );
 }
 
-export default (() => {
-  !tested && testCalculatePrimeNumbers();
-  tested = true;
+testCalculatePrimeNumbers();
 
-  return calculatePrimeNumbers;
-})();
+export default calculatePrimeNumbers;

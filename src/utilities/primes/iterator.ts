@@ -48,11 +48,8 @@ function testPrimeIterator() {
     generatedPrimes
   );
 }
-let tested = false;
 
-export default (() => {
-  !tested && testPrimeIterator();
-  tested = true;
+testPrimeIterator();
 
-  return primeIterator;
-})();
+export default primeIterator;
+
