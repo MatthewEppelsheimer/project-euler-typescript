@@ -33,7 +33,15 @@ function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] 
         DEBUG && console.log({ factorCandidate });
         if (-1 === factors.indexOf(factorCandidate) && 0 === product % factorCandidate) {
             factors.push(factorCandidate);
-            factors.push(product / factorCandidate);
+            const complementFactor = product / factorCandidate;
+            factors.push(complementFactor);
+
+            // recurse to add factors' factors, taking advantage of the cache for efficiency
+            [
+                ...getFactorsOf(factorCandidate),
+                ...getFactorsOf(complementFactor)
+            ].forEach(subFactor => { factors.push(subFactor); });
+
         }
         factorCandidate--;
     }
@@ -122,9 +130,9 @@ function testGetFactorsOf(): void {
         // exploit cache access, expect cache set for a factor's sub-factors
         factorCache.clear();
         const _actual = getFactorsOf(4);
-        test<typeof getFactorsOf>(`calculates factors of factors`,() => {
+        test<typeof getFactorsOf>(`calculates factors of factors`, () => {
             try {
-                assertArrayMembersAreEqual(factorCache.get(2) || [], [1,2]);
+                assertArrayMembersAreEqual(factorCache.get(2) || [], [1, 2]);
             } catch (e: unknown) {
                 throw new Error(`cache miss:\n${(e as Error).message}`);
             }
