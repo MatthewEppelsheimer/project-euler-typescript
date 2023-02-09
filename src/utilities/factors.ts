@@ -52,6 +52,7 @@ function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] 
 
 function testGetFactorsOf(): void {
     const test = testFactory({ reportPassingTests: true });
+
     ([
         [1, [1]],
         [2, [1, 2]],
@@ -83,6 +84,36 @@ function testGetFactorsOf(): void {
                 assertArrayMembersAreEqual(expected, actual);
             }, actual);
     });
+
+    {
+        factorCache.clear();
+        getFactorsOf(1);
+        const cached = factorCache.get(1);
+
+        test<typeof getFactorsOf>(`caches return values`, () => {
+            const expected = [1];
+            try {
+                assertArrayMembersAreEqual(expected, cached || []);
+            } catch (e: unknown) {
+                throw new Error(`cache miss:\n${(e as Error).message}`);
+            }
+        }, cached!)
+
+        factorCache.clear();
+    }
+
+    {
+        factorCache.clear();
+        const dummyCacheHit = [-2];
+        factorCache.set(1, dummyCacheHit);
+        const actual = getFactorsOf(1);
+
+        test<typeof getFactorsOf>(`uses cached values`, () => {
+            assertArrayMembersAreEqual(dummyCacheHit, actual);
+        }, actual);
+
+        factorCache.clear();
+    }
 }
 
 testGetFactorsOf();
