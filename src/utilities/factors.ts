@@ -18,21 +18,25 @@ function getFactorsOf(product: number, options?: {DEBUG?:boolean}): number[] {
     let factorCandidate: number = Math.floor(product / 2);
     while (factorCandidate > 1) {
         DEBUG && console.log({factorCandidate});
-        if (0 === product % factorCandidate) {
+        if (-1 === factors.indexOf(factorCandidate) && 0 === product % factorCandidate) {
             factors.push(factorCandidate);
+            factors.push(product / factorCandidate);
         }
         factorCandidate--;
     }
 
-    const sortFn = (a:number,b:number):-1 | 0 | 1 =>a < b ? -1 : a === b ? 0 : 1
+    // extractable for resuse
+    const sortFnNumericAscending = (a:number,b:number):-1 | 0 | 1 =>a < b ? -1 : a === b ? 0 : 1
 
-    DEBUG && console.log({factorsSorted:factors.sort(sortFn)});
-    return factors.sort(sortFn);
+    // extractable for resuse
+    const filternFnOnlyUnique = (value: any, index: number, array: any[]) => array.indexOf(value) === index;
+
+    DEBUG && console.log({factorsSorted:factors.sort(sortFnNumericAscending)});
+    return factors.filter(filternFnOnlyUnique).sort(sortFnNumericAscending);
 }
 
 function testGetFactorsOf(): void {
     const test = testFactory({ reportPassingTests: true });
-
     ([
         [1, [1]],
         [2,[1,2]],
