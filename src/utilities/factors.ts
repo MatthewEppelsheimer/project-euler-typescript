@@ -103,6 +103,7 @@ function testGetFactorsOf(): void {
     }
 
     {
+        // expoit cache access, and expect use of an injected nonsense value
         factorCache.clear();
         const dummyCacheHit = [-2];
         factorCache.set(1, dummyCacheHit);
@@ -113,6 +114,21 @@ function testGetFactorsOf(): void {
         }, actual);
 
         factorCache.clear();
+    }
+
+
+    {
+        // test of recursion:
+        // exploit cache access, expect cache set for a factor's sub-factors
+        factorCache.clear();
+        const _actual = getFactorsOf(4);
+        test<typeof getFactorsOf>(`calculates factors of factors`,() => {
+            try {
+                assertArrayMembersAreEqual(factorCache.get(2) || [], [1,2]);
+            } catch (e: unknown) {
+                throw new Error(`cache miss:\n${(e as Error).message}`);
+            }
+        }, _actual);
     }
 }
 
