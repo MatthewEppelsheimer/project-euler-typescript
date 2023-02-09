@@ -1,5 +1,17 @@
 {
+  "extends": "@tsconfig/node18-strictest/tsconfig.json",
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": true,
     "target": "esnext"
-  }
+  },
+  "include": ["index.ts", "src/**/*.ts"],
+  "buildOnSave": false,
+  "compileOnSave": false
 }

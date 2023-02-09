@@ -1,3 +1,5 @@
+import * as console from "console";
+
 function solution() {
   let multiples: number[] = [];
 

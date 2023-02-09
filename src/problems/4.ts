@@ -1,3 +1,5 @@
+import * as console from "console";
+
 // A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
 // Find the largest palindrome made from the product of two 3-digit numbers.
 
@@ -37,11 +39,10 @@ function* factorPair(): Generator<[number, number]> {
   // yield [997, 996];
   // yield [996,996];
 
-  let firstCountdown: Generator<number, number>;
+  let firstCountdown: Generator<number, number> = countdownFrom(999);
   const resetFirstCounter = (): void => {
     firstCountdown = countdownFrom(999);
   };
-  resetFirstCounter();
 
   const secondCountdown: Generator<number> = countdownFrom(999);
 
@@ -69,7 +70,7 @@ function solutionAttempt1(): void {
     return;
   }
 
-  let answer = null; 
+  let answer = null;
   let answerFactors;
   const candidateFactors = factorPair();
 
@@ -78,10 +79,10 @@ function solutionAttempt1(): void {
   let i = 0;
   while (answer === null && i < CIRCUIT_BREAKER_STEPS) {
     const c = candidateFactors.next().value;
-    const product = c[0] * c[1]; 
+    const product = c[0] * c[1];
 
     console.log({ first: c[0], second: c[1], product });
-    if (undefined !== debugLastProduct && debugLastProduct < product) {
+    if (undefined !== debugLastProduct! && debugLastProduct < product) {
       debugger;
     }
     debugLastProduct = product;
