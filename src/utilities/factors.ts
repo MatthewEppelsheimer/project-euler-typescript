@@ -1,5 +1,7 @@
-import testFactory from "../utilities/test";
-import { assertArrayMembersAreEqual } from "../utilities/array-assertions";
+import testFactory from "./test";
+import { assertArrayMembersAreEqual } from "./array-assertions";
+import {filternFnOnlyUnique, sortFnNumericAscending} from "./arrays";
+
 
 const factorCache = new Map<number, number[]>();
 
