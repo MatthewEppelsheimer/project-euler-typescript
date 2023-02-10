@@ -11,7 +11,7 @@ function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] 
 
     const cached = factorCache.get(product)
     if (undefined !== cached) {
-        return cached;
+        return [...cached]; // copy to avoid leaking access to cache reference! @TODO add test
     }
 
     if (1 === product) {
@@ -57,7 +57,7 @@ function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] 
 
     DEBUG && console.log({ factors: normalized });
     factorCache.set(product, normalized);
-    return normalized;
+    return [...normalized]; // always return a new reference
 }
 
 function testGetFactorsOf(): void {
