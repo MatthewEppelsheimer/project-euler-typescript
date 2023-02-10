@@ -10,58 +10,67 @@ const HIGHEST_DIVISOR = 9;
 const DEBUG_PROGRESS_REPORT_INTERVAL = CIRCUIT_BREAKER_STEPS / 10;
 
 function solution(): void {
-    let candidate: number = HIGHEST_DIVISOR * (HIGHEST_DIVISOR - 1); // start with smallest number that satisfies the two highest common factors
+  let candidate: number = HIGHEST_DIVISOR * (HIGHEST_DIVISOR - 1); // start with smallest number that satisfies the two highest common factors
 
-    let stepCount: number = 0;
-    let debugLowestDivisorTested = HIGHEST_DIVISOR; 
+  let stepCount: number = 0;
+  let debugLowestDivisorTested = HIGHEST_DIVISOR;
 
-    do {
-        if (DEBUG && 0 === candidate % DEBUG_PROGRESS_REPORT_INTERVAL) {
-            console.log(`testing candidate ${candidate} at step count ${stepCount}`);
-        }
+  do {
+    if (DEBUG && 0 === candidate % DEBUG_PROGRESS_REPORT_INTERVAL) {
+      console.log(`testing candidate ${candidate} at step count ${stepCount}`);
+    }
 
-        let knownDivisorsForCandidate: number[] = getFactorsOf(HIGHEST_DIVISOR);
-        for (
-            let testDivisor = HIGHEST_DIVISOR - 1;
-            testDivisor > 0;
-            testDivisor--
-        ) {
-            if (DEBUG && debugLowestDivisorTested > testDivisor) {
-                debugLowestDivisorTested = testDivisor;
-                console.log({ candidate, lowestDivisorTested: debugLowestDivisorTested, knownDivisorsForCandidate });
-            }
+    let knownDivisorsForCandidate: number[] = getFactorsOf(HIGHEST_DIVISOR);
+    for (
+      let testDivisor = HIGHEST_DIVISOR - 1;
+      testDivisor > 0;
+      testDivisor--
+    ) {
+      if (DEBUG && debugLowestDivisorTested > testDivisor) {
+        debugLowestDivisorTested = testDivisor;
+        console.log({
+          candidate,
+          lowestDivisorTested: debugLowestDivisorTested,
+          knownDivisorsForCandidate,
+        });
+      }
 
-            if (1 === testDivisor) {
-                // all pass! we're done
-                console.log(`The smallest positive number that is evenly divisible by all of the numbers from 1 to ${HIGHEST_DIVISOR} is ${candidate}`);
-                return;
-            }
+      if (1 === testDivisor) {
+        // all pass! we're done
+        console.log(
+          `The smallest positive number that is evenly divisible by all of the numbers from 1 to ${HIGHEST_DIVISOR} is ${candidate}`
+        );
+        return;
+      }
 
-            if (-1 !== knownDivisorsForCandidate.indexOf(testDivisor)) {
-                // we already know this passes
-                continue;
-            }
+      if (-1 !== knownDivisorsForCandidate.indexOf(testDivisor)) {
+        // we already know this passes
+        continue;
+      }
 
-            if (0 !== candidate % testDivisor) {
-                break;
-            }
+      if (0 !== candidate % testDivisor) {
+        break;
+      }
 
-            // reason about and save known divisors to skip them in future loops
-            const complement = candidate / testDivisor;
-            [
-                testDivisor,
-                ...(complement < HIGHEST_DIVISOR ? [complement, ...getFactorsOf(complement)] : []),
-                ...getFactorsOf(testDivisor)
-            ].filter(filternFnOnlyUnique).forEach((divisor) => {
-                //  console.log(`push`);
-                knownDivisorsForCandidate.push(divisor);
-            });
-
-        }
-        candidate += HIGHEST_DIVISOR;
-        stepCount++; // could derive this from candidate but this is more immediately clear
-    } while (stepCount < CIRCUIT_BREAKER_STEPS);
-    console.log(`Tripped circuit breaker after ${CIRCUIT_BREAKER_STEPS} steps`);
+      // reason about and save known divisors to skip them in future loops
+      const complement = candidate / testDivisor;
+      [
+        testDivisor,
+        ...(complement < HIGHEST_DIVISOR
+          ? [complement, ...getFactorsOf(complement)]
+          : []),
+        ...getFactorsOf(testDivisor),
+      ]
+        .filter(filternFnOnlyUnique)
+        .forEach((divisor) => {
+          //  console.log(`push`);
+          knownDivisorsForCandidate.push(divisor);
+        });
+    }
+    candidate += HIGHEST_DIVISOR;
+    stepCount++; // could derive this from candidate but this is more immediately clear
+  } while (stepCount < CIRCUIT_BREAKER_STEPS);
+  console.log(`Tripped circuit breaker after ${CIRCUIT_BREAKER_STEPS} steps`);
 }
 
 export default solution;

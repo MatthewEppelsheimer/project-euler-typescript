@@ -30,7 +30,7 @@ function solution(): void {
     }
 
     let factors = countdownFrom(999);
-    let testFactor: number
+    let testFactor: number;
 
     do {
       testFactor = factors.next().value;
@@ -38,7 +38,7 @@ function solution(): void {
         // console.log({candidate, testFactor});
 
         // short cut every 25
-        if (candidate/testFactor > testFactor) {
+        if (candidate / testFactor > testFactor) {
           // now we're testing repeats
           // console.log(`break with ${candidate/testFactor} > ${testFactor}`);
           break;
@@ -61,7 +61,7 @@ function solution(): void {
         // winner
         console.log(
           `The largest palindrome made from the product of two 3-digit numbers is ${candidate}, with factors ${testFactor} and ${secondFactor}`
-        )
+        );
         return;
       }
     } while (testFactor > 99);
@@ -72,4 +72,4 @@ export default solution;
 
 // First solution attempt was to generate products from factors, then check if they were palindromes. The challenge with this was determining if a found solution was the largest: I didn't crack the nut of how to generate factor pairs whose product would always be less than the previous.
 
-// So I switched to generating large-to-small palindromes, and looking for factor pairs. 
+// So I switched to generating large-to-small palindromes, and looking for factor pairs.
