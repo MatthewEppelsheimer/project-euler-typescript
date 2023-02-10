@@ -48,11 +48,6 @@ function getFactorsOf(product: number, options?: { DEBUG?: boolean }): number[] 
         factorCandidate--;
     }
 
-    // extractable for resuse
-    const sortFnNumericAscending = (a: number, b: number): -1 | 0 | 1 => a < b ? -1 : a === b ? 0 : 1
-    // extractable for resuse
-    const filternFnOnlyUnique = (value: any, index: number, array: any[]) => array.indexOf(value) === index;
-
     const normalized = factors.filter(filternFnOnlyUnique).sort(sortFnNumericAscending);
 
     DEBUG && console.log({ factors: normalized });
